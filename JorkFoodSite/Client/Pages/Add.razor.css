@@ -1,0 +1,11 @@
+﻿.layout {
+    display: flex;
+    flex-direction: column;
+}
+
+textarea {
+    height: calc(100vh - 200px);
+    width: 1000px;
+    max-width: calc(100vw - 20px);
+    resize: none;
+}

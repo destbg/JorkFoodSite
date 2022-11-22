@@ -1,0 +1,23 @@
+﻿@page "/orders"
+@inject HttpClient Http
+
+@if (orders != null)
+{
+    <ul>
+        @foreach (var order in orders)
+        {
+            <li>
+                <span>@order.Name (@order.People)</span>
+            </li>
+        }
+    </ul>
+}
+
+@code {
+    private List<OrderDTO>? orders;
+
+    protected override async Task OnInitializedAsync()
+    {
+        orders = await Http.GetFromJsonAsync<List<OrderDTO>>("App/Orders");
+    }
+}

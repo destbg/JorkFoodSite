@@ -1,0 +1,32 @@
+﻿@page "/"
+@inject HttpClient Http
+
+@if (productGroups != null)
+{
+    <div class="card-group">
+        @foreach (var group in productGroups)
+        {
+            <h1 class="title">@group.Name</h1>
+
+            <ProductCard Products="group.Products" OnProductClicked="OnClicked" />
+        }
+    </div>
+}
+
+@code {
+    private List<ProductGroupDTO>? productGroups;
+
+    protected override async Task OnInitializedAsync()
+    {
+        productGroups = await Http.GetFromJsonAsync<List<ProductGroupDTO>>("App/Menu");
+    }
+
+    private Task OnClicked(ProductDTO product)
+    {
+        return Http.PostAsJsonAsync("App/SubmitOrder", new SubmitOrderDTO
+        {
+            PersonName = Constants.PersonName,
+            ProductId = product.Id
+        });
+    }
+}

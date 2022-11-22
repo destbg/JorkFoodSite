@@ -1,0 +1,32 @@
+﻿@inherits LayoutComponentBase
+
+<NavMenu />
+
+<main>
+    @Body
+</main>
+
+@if (!pickedName)
+{
+    <div class="name-dialog">
+        <div class="panel">
+            <label>Име</label>
+            <input type="text" @bind-value="name">
+            <button @onclick="OnPickName">ОК</button>
+        </div>
+    </div>
+}
+
+@code {
+    private string name = string.Empty;
+    private bool pickedName;
+
+    private void OnPickName()
+    {
+        if (!string.IsNullOrEmpty(name))
+        {
+            pickedName = true;
+            Constants.PersonName = name;
+        }
+    }
+}

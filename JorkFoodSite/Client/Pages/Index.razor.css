@@ -1,0 +1,9 @@
+﻿.card-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.card-group .title {
+    align-self: center;
+    margin: 16px 0;
+}
