@@ -1,82 +1,8 @@
 ﻿@page "/add"
-@using System.Text.RegularExpressions;
-@inject HttpClient Http
-@inject NavigationManager uriHelper
+@using System.Text.RegularExpressions
 
 <div class="layout">
-    <textarea @bind="menu" />
+    <textarea @bind="Menu" />
     <button @onclick="Submit">Изпрати менюто</button>
 </div>
 
-@code {
-    private string menu = string.Empty;
-
-    private async Task Submit()
-    {
-        if (string.IsNullOrEmpty(menu))
-        {
-            return;
-        }
-
-        string[] split = menu
-            .Split(new char[] { '\n' }, StringSplitOptions.RemoveEmptyEntries)
-            .Select(f => f.Trim().Replace("*", string.Empty).Replace("\"", string.Empty))
-            .ToArray();
-
-        List<ProductGroupDTO> list = new();
-        ProductGroupDTO? currentGroup = null;
-        Regex regex = new("([0-9,]+)[ ]*лв");
-        int startIndex = -1;
-
-        for (int i = 0; i < split.Length; i++)
-        {
-            string text = split[i].Trim();
-
-            if (text == text.ToUpper() || text == "други" || text == "🥡 други 🥡")
-            {
-                if (startIndex != -1 && currentGroup != null)
-                {
-                    currentGroup.Products.Add(new ProductDTO
-                    {
-                        Name = string.Join(" ", split[startIndex..i])
-                    });
-
-                    startIndex = -1;
-                }
-
-                currentGroup = new ProductGroupDTO
-                {
-                    Name = text,
-                    Products = new List<ProductDTO>()
-                };
-                list.Add(currentGroup);
-            }
-            else if (currentGroup != null)
-            {
-                if (regex.IsMatch(text))
-                {
-                    if (startIndex != -1)
-                    {
-                        currentGroup.Products.Add(new ProductDTO
-                        {
-                            Name = string.Join(" ", split[startIndex..i])
-                        });
-                    }
-
-                    startIndex = i;
-                }
-            }
-        }
-
-        if (currentGroup != null)
-        {
-            currentGroup.Products.Add(new ProductDTO
-            {
-                Name = string.Join(" ", split[startIndex..(split.Length - 1)])
-            });
-        }
-
-        await Http.PostAsJsonAsync("App/ReplaceMenu", list);
-        uriHelper.NavigateTo("/");
-    }
-}

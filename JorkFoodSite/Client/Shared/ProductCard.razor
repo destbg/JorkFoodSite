@@ -1,8 +1,6 @@
-﻿@inject IJSRuntime JS
-
-@if (Products != null)
+﻿@if (Products != null)
 {
-    <div id="cards" @ref="cardsElement">
+    <div id="cards">
         @foreach (var product in Products)
         {
             <div class="card @(Orders != null && Orders.Any(f => f.ProductId == product.Id) ? "card-active" : string.Empty)" @onclick="() => OnProductClicked.InvokeAsync(product)">
@@ -19,17 +17,4 @@
             </div>
         }
     </div>
-}
-
-@code {
-    private ElementReference cardsElement;
-    [Parameter] public List<ProductDTO>? Products { get; set; }
-    [Parameter] public List<PersonOrderDTO>? Orders { get; set; }
-
-    [Parameter] public EventCallback<ProductDTO> OnProductClicked { get; set; }
-
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        await JS.InvokeVoidAsync("configureCards", cardsElement);
-    }
 }

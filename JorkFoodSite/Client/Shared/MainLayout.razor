@@ -1,8 +1,6 @@
 ﻿@inherits LayoutComponentBase
-@inject IJSRuntime JS
-@inject NavigationManager uriHelper
 
-@if (hasInitialized)
+@if (HasInitialized)
 {
     <NavMenu />
 }
@@ -11,50 +9,21 @@
     @Body
 </main>
 
-@if (!pickedName)
+@if (!PickedName)
 {
     <div class="name-dialog">
         <div class="panel">
             <label>Име</label>
-            <input type="text" @bind-value="name">
+            <input type="text" @bind-value="Name">
             <button @onclick="OnPickName">ОК</button>
         </div>
     </div>
 }
 
-<div class="person-name-btn" @onclick="() => pickedName = false">
+<div class="person-name-btn" @onclick="() => PickedName = false">
     <i class="fa-solid fa-circle-user" />
 </div>
 
 <div class="person-name">
     @Constants.PersonName
 </div>
-
-@code {
-    private string name = string.Empty;
-    private bool pickedName;
-    private bool hasInitialized;
-
-    protected override async Task OnInitializedAsync()
-    {
-        name = await JS.InvokeAsync<string>("window.localStorage.getItem", "Name");
-        Constants.PersonName = name;
-
-        if (!string.IsNullOrEmpty(name))
-        {
-            pickedName = true;
-        }
-
-        hasInitialized = true;
-    }
-
-    private async Task OnPickName()
-    {
-        if (!string.IsNullOrEmpty(name))
-        {
-            Constants.PersonName = name;
-            await JS.InvokeVoidAsync("window.localStorage.setItem", "Name", name);
-            uriHelper.NavigateTo(uriHelper.Uri, forceLoad: true);
-        }
-    }
-}

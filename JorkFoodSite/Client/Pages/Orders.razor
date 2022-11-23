@@ -1,12 +1,11 @@
 ﻿@page "/orders"
-@inject HttpClient Http
 
-@if (orders != null)
+@if (PersonOrders != null)
 {
-    if (orders.Count > 0)
+    if (PersonOrders.Count > 0)
     {
         <ul>
-            @foreach (var order in orders)
+            @foreach (var order in PersonOrders)
             {
                 <li>
                     <span>@order.Name (@order.People) - @order.Count бр.</span>
@@ -17,14 +16,5 @@
     else
     {
         <span>Няма поръчки</span>
-    }
-}
-
-@code {
-    private List<OrderDTO>? orders;
-
-    protected override async Task OnInitializedAsync()
-    {
-        orders = await Http.GetFromJsonAsync<List<OrderDTO>>("App/Orders");
     }
 }

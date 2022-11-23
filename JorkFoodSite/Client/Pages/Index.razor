@@ -1,27 +1,26 @@
 ﻿@page "/"
-@inject HttpClient Http
 
-@if (productGroups != null)
+@if (ProductGroups != null)
 {
     <div class="card-group">
-        @foreach (var group in productGroups)
+        @foreach (var group in ProductGroups)
         {
             <h1 class="title">@group.Name</h1>
 
-            <ProductCard Products="group.Products" Orders="orders" OnProductClicked="OnClicked" />
+            <ProductCard Products="group.Products" Orders="Orders" OnProductClicked="OnClicked" />
         }
     </div>
 }
 
-@if (orders != null)
+@if (Orders != null)
 {
     <div class="person-orders-btn">
-        <i class="fa-solid fa-bag-shopping" @onclick="() => isOrdersVisible = !isOrdersVisible" />
-        <div style="display: @(isOrdersVisible ? "block" : "none")" class="person-orders-content">
-            @if (orders.Count > 0)
+        <i class="fa-solid fa-bag-shopping" @onclick="() => IsOrdersVisible = !IsOrdersVisible" />
+        <div style="display: @(IsOrdersVisible ? "block" : "none")" class="person-orders-content">
+            @if (Orders.Count > 0)
             {
                 <ul>
-                    @foreach (var order in orders)
+                    @foreach (var order in Orders)
                     {
                         <li>
                             <span>@order.Name</span>
@@ -33,7 +32,7 @@
                 </ul>
 
                 <div>
-                    Кутия за еднокр. употреба @(orders.Count)бр @((orders.Count * 0.20).ToString("0.00"))лв
+                    Кутия за еднокр. употреба @(Orders.Count)бр @((Orders.Count * 0.20).ToString("0.00"))лв
                 </div>
             }
             else
@@ -42,41 +41,4 @@
             }
         </div>
     </div>
-}
-
-@code {
-    private List<ProductGroupDTO>? productGroups;
-    private List<PersonOrderDTO>? orders;
-    private bool isOrdersVisible = false;
-
-    protected override async Task OnInitializedAsync()
-    {
-        productGroups = await Http.GetFromJsonAsync<List<ProductGroupDTO>>("App/Menu");
-
-        if (!string.IsNullOrEmpty(Constants.PersonName))
-        {
-            orders = await Http.GetFromJsonAsync<List<PersonOrderDTO>>("App/PersonOrders/" + Constants.PersonName);
-        }
-    }
-
-    private async Task OnClicked(ProductDTO product)
-    {
-        await Http.PostAsJsonAsync("App/SubmitOrder", new SubmitOrderDTO
-        {
-            PersonName = Constants.PersonName,
-            ProductId = product.Id
-        });
-        orders = await Http.GetFromJsonAsync<List<PersonOrderDTO>>("App/PersonOrders/" + Constants.PersonName);
-    }
-
-    private Task CancelOrder(PersonOrderDTO order)
-    {
-        orders!.Remove(order);
-
-        return Http.PostAsJsonAsync("App/CancelOrder", new SubmitOrderDTO
-        {
-            PersonName = Constants.PersonName,
-            ProductId = order.ProductId,
-        });
-    }
 }
