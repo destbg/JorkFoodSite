@@ -8,7 +8,7 @@
         {
             <h1 class="title">@group.Name</h1>
 
-            <ProductCard Products="group.Products" OnProductClicked="OnClicked" />
+            <ProductCard Products="group.Products" Orders="orders" OnProductClicked="OnClicked" />
         }
     </div>
 }
@@ -16,8 +16,8 @@
 @if (orders != null)
 {
     <div class="person-orders-btn">
-        <i class="fa-solid fa-bag-shopping" />
-        <div class="person-orders-content">
+        <i class="fa-solid fa-bag-shopping" @onclick="() => isOrdersVisible = !isOrdersVisible" />
+        <div style="display: @(isOrdersVisible ? "block" : "none")" class="person-orders-content">
             @if (orders.Count > 0)
             {
                 <ul>
@@ -47,6 +47,7 @@
 @code {
     private List<ProductGroupDTO>? productGroups;
     private List<PersonOrderDTO>? orders;
+    private bool isOrdersVisible = false;
 
     protected override async Task OnInitializedAsync()
     {

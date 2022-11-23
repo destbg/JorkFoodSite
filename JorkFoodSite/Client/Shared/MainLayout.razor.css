@@ -61,17 +61,13 @@ button {
 .person-name-btn {
     position: fixed;
     display: inline-block;
-    top: 5px;
-    left: 5px;
+    top: 10px;
+    left: 10px;
 }
-
-    .person-name-btn .fa-solid {
-        font-size: 20px;
-    }
 
 .person-name {
     position: fixed;
     display: inline-block;
-    top: 5px;
-    left: 35px;
+    top: 14px;
+    left: 50px;
 }

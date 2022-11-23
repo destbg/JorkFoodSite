@@ -5,7 +5,7 @@
     <div id="cards" @ref="cardsElement">
         @foreach (var product in Products)
         {
-            <div class="card" @onclick="() => OnProductClicked.InvokeAsync(product)">
+            <div class="card @(Orders != null && Orders.Any(f => f.ProductId == product.Id) ? "card-active" : string.Empty)" @onclick="() => OnProductClicked.InvokeAsync(product)">
                 <div class="card-content">
                     <div class="card-info-wrapper">
                         <div class="card-info">
@@ -24,6 +24,7 @@
 @code {
     private ElementReference cardsElement;
     [Parameter] public List<ProductDTO>? Products { get; set; }
+    [Parameter] public List<PersonOrderDTO>? Orders { get; set; }
 
     [Parameter] public EventCallback<ProductDTO> OnProductClicked { get; set; }
 

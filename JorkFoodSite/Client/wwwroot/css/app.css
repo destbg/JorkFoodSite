@@ -107,3 +107,7 @@ i {
     .loading-progress-text:after {
         content: var(--blazor-load-percentage-text, "Loading");
     }
+
+.fa-solid {
+    font-size: 30px;
+}
