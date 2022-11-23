@@ -3,8 +3,34 @@
     --card-color: rgb(23, 23, 23);
 }
 
+::-webkit-scrollbar {
+    height: 12px;
+    width: 12px;
+    background: #000;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgb(0, 63, 43);
+    -webkit-border-radius: 1ex;
+    -webkit-box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.75);
+}
+
+::-webkit-scrollbar-corner {
+    background: #000;
+}
+
 * {
+    color: rgb(240, 240, 240);
     font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
+h1, h2, h3, h4, span, label {
+    margin: 0px;
+    font-weight: 400;
+}
+
+input, textarea, button {
+    color: black !important;
 }
 
 body {
@@ -14,13 +40,6 @@ body {
     justify-content: center;
     margin: 0px;
     padding: 0px;
-}
-
-h1, h2, h3, h4, span, label {
-    color: rgb(240, 240, 240);
-    font-family: "Rubik", sans-serif;
-    font-weight: 400;
-    margin: 0px;
 }
 
 i {

@@ -3,7 +3,42 @@
     flex-direction: column;
 }
 
-.card-group .title {
-    align-self: center;
-    margin: 16px 0;
+    .card-group .title {
+        align-self: center;
+        margin: 16px 0;
+    }
+
+.person-orders-btn {
+    position: fixed;
+    display: inline-block;
+    top: 5px;
+    right: 5px;
 }
+
+    .person-orders-btn .fa-solid {
+        font-size: 20px;
+    }
+
+.person-orders-content {
+    display: none;
+    position: absolute;
+    background-color: var(--card-color);
+    min-width: 260px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    padding: 12px 16px;
+    z-index: 200;
+    right: 0;
+}
+
+.person-orders-btn:hover .person-orders-content {
+    display: block;
+}
+
+.person-order-button {
+    background-color: black;
+    transition: background-color linear 275ms;
+}
+
+    .person-order-button:hover {
+        background-color: var(--bg-color);
+    }

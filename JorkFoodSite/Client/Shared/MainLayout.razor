@@ -1,6 +1,11 @@
 ﻿@inherits LayoutComponentBase
+@inject IJSRuntime JS
+@inject NavigationManager uriHelper
 
-<NavMenu />
+@if (Constants.PersonName == "admin")
+{
+    <NavMenu />
+}
 
 <main>
     @Body
@@ -17,16 +22,32 @@
     </div>
 }
 
+<div class="person-name-btn" @onclick="() => pickedName = false">
+    <i class="fa-solid fa-circle-user" />
+</div>
+
 @code {
     private string name = string.Empty;
     private bool pickedName;
 
-    private void OnPickName()
+    protected override async Task OnInitializedAsync()
     {
+        name = await JS.InvokeAsync<string>("window.localStorage.getItem", "Name");
+        Constants.PersonName = name;
+
         if (!string.IsNullOrEmpty(name))
         {
             pickedName = true;
+        }
+    }
+
+    private async Task OnPickName()
+    {
+        if (!string.IsNullOrEmpty(name))
+        {
             Constants.PersonName = name;
+            await JS.InvokeVoidAsync("window.localStorage.setItem", "Name", name);
+            uriHelper.NavigateTo(uriHelper.Uri, forceLoad: true);
         }
     }
 }

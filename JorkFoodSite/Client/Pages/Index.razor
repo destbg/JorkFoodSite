@@ -13,20 +13,65 @@
     </div>
 }
 
+@if (orders != null)
+{
+    <div class="person-orders-btn">
+        <i class="fa-solid fa-bag-shopping" />
+        <div class="person-orders-content">
+            @if (orders.Count > 0)
+            {
+                <ul>
+                    @foreach (var order in orders)
+                    {
+                        <li>
+                            <span>@order.Name</span>
+                            <button class="person-order-button" @onclick="() => CancelOrder(order)">
+                                <i class="fa-solid fa-minus" />
+                            </button>
+                        </li>
+                    }
+                </ul>
+            }
+            else
+            {
+                <span>Все още нямаш поръчки!</span>
+            }
+        </div>
+    </div>
+}
+
 @code {
     private List<ProductGroupDTO>? productGroups;
+    private List<PersonOrderDTO>? orders;
 
     protected override async Task OnInitializedAsync()
     {
         productGroups = await Http.GetFromJsonAsync<List<ProductGroupDTO>>("App/Menu");
+
+        if (!string.IsNullOrEmpty(Constants.PersonName))
+        {
+            orders = await Http.GetFromJsonAsync<List<PersonOrderDTO>>("App/PersonOrders/" + Constants.PersonName);
+        }
     }
 
-    private Task OnClicked(ProductDTO product)
+    private async Task OnClicked(ProductDTO product)
     {
-        return Http.PostAsJsonAsync("App/SubmitOrder", new SubmitOrderDTO
+        await Http.PostAsJsonAsync("App/SubmitOrder", new SubmitOrderDTO
         {
             PersonName = Constants.PersonName,
             ProductId = product.Id
+        });
+        orders = await Http.GetFromJsonAsync<List<PersonOrderDTO>>("App/PersonOrders/" + Constants.PersonName);
+    }
+
+    private Task CancelOrder(PersonOrderDTO order)
+    {
+        orders!.Remove(order);
+
+        return Http.PostAsJsonAsync("App/CancelOrder", new SubmitOrderDTO
+        {
+            PersonName = Constants.PersonName,
+            ProductId = order.ProductId,
         });
     }
 }

@@ -9,14 +9,12 @@
     top: 0;
     height: 100vh;
     width: 100vw;
-    z-index: 100;
+    z-index: 1000;
 }
 
     .name-dialog .panel {
         display: flex;
         flex-direction: column;
-        background-color: var(--bg-color);
-        box-shadow: rgba(0,0,0,0.4) 10px 10px inset;
         width: 200px;
         align-self: center;
         gap: 4px;
@@ -55,3 +53,18 @@
             background-color: #0b5ed7;
             border-color: #0a58ca;
         }
+
+button {
+    color: white !important;
+}
+
+.person-name-btn {
+    position: fixed;
+    display: inline-block;
+    top: 5px;
+    left: 5px;
+}
+
+    .person-name-btn .fa-solid {
+        font-size: 20px;
+    }

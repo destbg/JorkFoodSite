@@ -45,6 +45,23 @@ public class AppController : ControllerBase
         return Ok(groups);
     }
 
+    [HttpGet("PersonOrders/{userId}")]
+    public IActionResult PersonOrders([FromRoute] string userId)
+    {
+        List<PersonOrderDTO> orders = (
+            from order in context.Orders
+            join item in context.Products on order.ProductId equals item.Id
+            where order.PersonName == userId
+            select new PersonOrderDTO
+            {
+                ProductId = item.Id,
+                Name = item.Name,
+            }
+        ).ToList();
+
+        return Ok(orders);
+    }
+
     [HttpGet("Orders")]
     public IActionResult Orders()
     {
@@ -80,6 +97,17 @@ public class AppController : ControllerBase
             ProductId = order.ProductId,
         });
 
+        context.SaveChanges();
+
+        return Ok();
+    }
+
+    [HttpPost("CancelOrder")]
+    public IActionResult CancelOrder([FromBody] SubmitOrderDTO order)
+    {
+        Order orderEntity = context.Orders.FirstOrDefault(f => f.PersonName == order.PersonName && f.ProductId == order.ProductId);
+
+        context.Orders.Remove(orderEntity);
         context.SaveChanges();
 
         return Ok();
