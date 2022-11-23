@@ -1,6 +1,9 @@
 ﻿<nav>
     <a href="/">Меню</a>
     <a href="/orders">Поръчки</a>
-    <a href="/add">Добави</a>
+    @if (Constants.PersonName == "admin")
+    {
+        <a href="/add">Добави</a>
+    }
     <div class="dot"></div>
 </nav>
