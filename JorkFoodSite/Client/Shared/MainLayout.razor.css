@@ -68,3 +68,10 @@ button {
     .person-name-btn .fa-solid {
         font-size: 20px;
     }
+
+.person-name {
+    position: fixed;
+    display: inline-block;
+    top: 5px;
+    left: 35px;
+}
