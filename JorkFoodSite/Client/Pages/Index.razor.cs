@@ -24,22 +24,52 @@ public partial class Index
 
     private async Task OnClicked(ProductDTO product)
     {
-        await Http.PostAsJsonAsync("App/SubmitOrder", new SubmitOrderDTO
+        if (Orders == null || !Orders.Any(f => f.ProductId == product.Id))
         {
-            PersonName = Constants.PersonName,
-            ProductId = product.Id
-        });
-        Orders = await Http.GetFromJsonAsync<List<PersonOrderDTO>>("App/PersonOrders/" + Constants.PersonName);
+            await Http.PostAsJsonAsync("App/SubmitOrder", new SubmitOrderDTO
+            {
+                PersonName = Constants.PersonName,
+                ProductId = product.Id
+            });
+            Orders = await Http.GetFromJsonAsync<List<PersonOrderDTO>>("App/PersonOrders/" + Constants.PersonName);
+        }
+    }
+
+    private void OpenOrders()
+    {
+        IsOrdersVisible = true;
+    }
+
+    private void CloseOrders()
+    {
+        IsOrdersVisible = false;
     }
 
     private Task CancelOrder(PersonOrderDTO order)
     {
-        Orders!.Remove(order);
+        if (order.Count > 1)
+        {
+            order.Count--;
+        }
+        else
+        {
+            Orders!.Remove(order);
+        }
 
         return Http.PostAsJsonAsync("App/CancelOrder", new SubmitOrderDTO
         {
             PersonName = Constants.PersonName,
             ProductId = order.ProductId,
         });
+    }
+
+    private async Task AddOrder(PersonOrderDTO order)
+    {
+        await Http.PostAsJsonAsync("App/SubmitOrder", new SubmitOrderDTO
+        {
+            PersonName = Constants.PersonName,
+            ProductId = order.ProductId
+        });
+        order.Count++;
     }
 }

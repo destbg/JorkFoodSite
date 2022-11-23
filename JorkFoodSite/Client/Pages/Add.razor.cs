@@ -1,4 +1,5 @@
-﻿using System.Net.Http.Json;
+﻿using System.Globalization;
+using System.Net.Http.Json;
 using System.Text.RegularExpressions;
 using JorkFoodSite.Shared;
 using Microsoft.AspNetCore.Components;
@@ -39,9 +40,15 @@ public partial class Add
                 {
                     string name = string.Join(" ", split[startIndex..i]);
 
+                    if (!double.TryParse(regex.Match(name).Groups[1].Value.Replace(",", "."), CultureInfo.InvariantCulture, out double price))
+                    {
+                        price = 10000;
+                    }
+
                     currentGroup.Products.Add(new ProductDTO
                     {
-                        Name = name
+                        Name = name,
+                        Price = price
                     });
 
                     startIndex = -1;
@@ -62,9 +69,15 @@ public partial class Add
                     {
                         string name = string.Join(" ", split[startIndex..i]);
 
+                        if (!double.TryParse(regex.Match(name).Groups[1].Value.Replace(",", "."), CultureInfo.InvariantCulture, out double price))
+                        {
+                            price = 10000;
+                        }
+
                         currentGroup.Products.Add(new ProductDTO
                         {
-                            Name = name
+                            Name = name,
+                            Price = price
                         });
                     }
 
@@ -75,9 +88,17 @@ public partial class Add
 
         if (currentGroup != null && !string.IsNullOrEmpty(split[^1]))
         {
+            string name = string.Join(" ", split[startIndex..^1]);
+
+            if (!double.TryParse(regex.Match(name).Groups[1].Value.Replace(",", "."), CultureInfo.InvariantCulture, out double price))
+            {
+                price = 10000;
+            }
+
             currentGroup.Products.Add(new ProductDTO
             {
-                Name = string.Join(" ", split[startIndex..^1])
+                Name = name,
+                Price = price
             });
         }
 

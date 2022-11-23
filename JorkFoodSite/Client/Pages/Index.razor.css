@@ -15,22 +15,51 @@
     right: 10px;
 }
 
-.person-orders-content {
-    position: absolute;
-    background-color: var(--card-color);
-    min-width: 260px;
-    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-    padding: 12px 16px;
-    z-index: 200;
+.orders-container {
+    position: fixed;
+    top: 0;
+    left: 0;
     right: 0;
-    margin-right: -5px;
+    bottom: 0;
+    display: none;
+    background-color: rgba(20, 20, 20, .3);
+    z-index: 10;
 }
 
-.person-order-button {
-    background-color: black;
-    transition: background-color linear 275ms;
+.orders-visible {
+    display: block !important;
 }
 
-    .person-order-button:hover {
-        background-color: var(--bg-color);
+.orders-drawer {
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 600px;
+    position: fixed;
+    height: 100vh;
+    padding: 10px;
+    display: none;
+    z-index: 11;
+    background-color: var(--card-color);
+}
+
+.orders-content {
+    display: grid;
+    grid-template-columns: 65% 10% 10% 10%;
+    column-gap: 10px;
+    row-gap: 10px;
+    margin-bottom: 20px;
+}
+
+    .orders-content .count {
+        align-self: center;
+        text-align: center;
     }
+
+    .orders-content .text {
+        align-self: center;
+    }
+
+.orders-price {
+    text-align: end;
+}

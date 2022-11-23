@@ -8,7 +8,24 @@
             @foreach (var order in PersonOrders)
             {
                 <li>
-                    <span>@order.Name (@order.People) - @order.Count бр.</span>
+                    <span>@order.Name (</span>
+                    @for (int i = 0; i < order.People.Count; i++)
+                    {
+                        var person = order.People[i];
+
+                        <span>@person.Name</span>
+
+                        @if (person.Count > 1)
+                        {
+                            <span style="margin-left: 5px"> @person.Count бр</span>
+                        }
+
+                        @if (i != order.People.Count - 1)
+                        {
+                            <span>, </span>
+                        }
+                    }
+                    <span>) - @order.Count бр.</span>
                 </li>
             }
         </ul>
@@ -17,4 +34,8 @@
     {
         <span>Няма поръчки</span>
     }
+}
+else
+{
+    <span>Поръчките зареждат</span>
 }

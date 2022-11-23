@@ -11,34 +11,51 @@
         }
     </div>
 }
-
-@if (Orders != null)
+else
 {
-    <div class="person-orders-btn">
-        <i class="fa-solid fa-bag-shopping" @onclick="() => IsOrdersVisible = !IsOrdersVisible" />
-        <div style="display: @(IsOrdersVisible ? "block" : "none")" class="person-orders-content">
-            @if (Orders.Count > 0)
-            {
-                <ul>
-                    @foreach (var order in Orders)
-                    {
-                        <li>
-                            <span>@order.Name</span>
-                            <button class="person-order-button" @onclick="() => CancelOrder(order)">
-                                <i class="fa-solid fa-minus" />
-                            </button>
-                        </li>
-                    }
-                </ul>
-
-                <div>
-                    Кутия за еднокр. употреба @(Orders.Count)бр @((Orders.Count * 0.20).ToString("0.00"))лв
-                </div>
-            }
-            else
-            {
-                <span>Все още нямаш поръчки!</span>
-            }
-        </div>
-    </div>
+    <span>Менюто зарежда</span>
 }
+
+<div class="person-orders-btn">
+    <i class="fa-solid fa-bag-shopping" @onclick="OpenOrders" />
+</div>
+
+<div class="orders-container @(IsOrdersVisible ? "orders-visible" : "")" @onclick="CloseOrders">
+</div>
+
+<div class="orders-drawer @(IsOrdersVisible ? "orders-visible" : "")">
+    @if (Orders != null)
+    {
+        if (Orders.Count > 0)
+        {
+            <div class="orders-content">
+                @foreach (var order in Orders)
+                {
+                    <div class="text">@order.Name</div>
+                    <button @onclick="() => CancelOrder(order)">
+                        <i class="fa-solid fa-minus" />
+                    </button>
+                    <div class="count">Брой @order.Count</div>
+                    <button @onclick="() => AddOrder(order)">
+                        <i class="fa-solid fa-plus" />
+                    </button>
+                }
+            </div>
+
+            <div>
+                Кутия за еднократна употреба @(Orders.Count)бр @((Orders.Count * 0.20).ToString("0.00"))лв
+            </div>
+            <div class="orders-price">
+                Общо @((Orders.Sum(f => f.Price * f.Count) + Orders.Count * 0.20).ToString("0.00"))лв
+            </div>
+        }
+        else
+        {
+            <span>Все още нямаш поръчки!</span>
+        }
+    }
+    else
+    {
+        <span>Поръчките се теглят</span>
+    }
+</div>

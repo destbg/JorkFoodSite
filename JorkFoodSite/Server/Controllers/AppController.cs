@@ -25,6 +25,7 @@ public class AppController : ControllerBase
                 Id = item.Id,
                 ProductGroupId = item.ProductGroupId,
                 Name = item.Name,
+                Price = item.Price,
             }
         ).ToList();
 
@@ -56,6 +57,8 @@ public class AppController : ControllerBase
             {
                 ProductId = item.Id,
                 Name = item.Name,
+                Price = item.Price,
+                Count = order.Count,
             }
         ).ToList();
 
@@ -65,37 +68,53 @@ public class AppController : ControllerBase
     [HttpGet("Orders")]
     public IActionResult Orders()
     {
-        List<OrderDTO> orders = (
-            from order in context.Orders
-            join item in context.Products on order.ProductId equals item.Id
-            group new
-            {
-                Order = order,
-                Product = item
-            } by new
-            {
-                item.Name,
-            } into grp
-            select new OrderDTO
-            {
-                Name = grp.Key.Name,
-                Count = grp.Count(),
-                People = string.Join(", ", grp.Select(f => f.Order.PersonName))
-            }
-        ).ToList();
+        List<Order> orders = context.Orders.ToList();
+        List<Product> products = context.Products.ToList();
 
-        return Ok(orders);
+        List<OrderDTO> result = new();
+
+        foreach (Product product in products)
+        {
+            List<Order> productOrders = orders.FindAll(f => f.ProductId == product.Id);
+
+            if (productOrders.Count > 0)
+            {
+                result.Add(new OrderDTO
+                {
+                    Count = productOrders.Sum(f => f.Count),
+                    Name = product.Name,
+                    Price = product.Price,
+                    People = productOrders.ConvertAll(f => new OrderPersonDTO
+                    {
+                        Count = f.Count,
+                        Name = f.PersonName,
+                    })
+                });
+            }
+        }
+
+        return Ok(result);
     }
 
     [HttpPost("SubmitOrder")]
     public IActionResult SubmitOrder([FromBody] SubmitOrderDTO order)
     {
-        context.Orders.Add(new Order
+        Order prevOrder = context.Orders.FirstOrDefault(f => f.PersonName == order.PersonName && f.ProductId == order.ProductId);
+
+        if (prevOrder != null)
         {
-            Id = Guid.NewGuid().ToString("N"),
-            PersonName = order.PersonName,
-            ProductId = order.ProductId,
-        });
+            prevOrder.Count++;
+        }
+        else
+        {
+            context.Orders.Add(new Order
+            {
+                Id = Guid.NewGuid().ToString("N"),
+                PersonName = order.PersonName,
+                ProductId = order.ProductId,
+                Count = 1
+            });
+        }
 
         context.SaveChanges();
 
@@ -107,7 +126,15 @@ public class AppController : ControllerBase
     {
         Order orderEntity = context.Orders.FirstOrDefault(f => f.PersonName == order.PersonName && f.ProductId == order.ProductId);
 
-        context.Orders.Remove(orderEntity);
+        if (orderEntity.Count > 1)
+        {
+            orderEntity.Count--;
+        }
+        else
+        {
+            context.Orders.Remove(orderEntity);
+        }
+
         context.SaveChanges();
 
         return Ok();
@@ -129,6 +156,7 @@ public class AppController : ControllerBase
             {
                 Id = Guid.NewGuid().ToString("N"),
                 Name = s.Name,
+                Price = s.Price,
             })
         });
 
