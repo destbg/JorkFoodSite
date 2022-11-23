@@ -1,6 +1,7 @@
 ﻿@page "/add"
 @using System.Text.RegularExpressions;
 @inject HttpClient Http
+@inject NavigationManager uriHelper
 
 <div class="layout">
     <textarea @bind="menu" />
@@ -71,10 +72,11 @@
         {
             currentGroup.Products.Add(new ProductDTO
             {
-                Name = string.Join("", split[startIndex..(split.Length - 1)])
+                Name = string.Join(" ", split[startIndex..(split.Length - 1)])
             });
         }
 
         await Http.PostAsJsonAsync("App/ReplaceMenu", list);
+        uriHelper.NavigateTo("/");
     }
 }

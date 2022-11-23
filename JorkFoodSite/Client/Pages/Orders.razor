@@ -3,14 +3,21 @@
 
 @if (orders != null)
 {
-    <ul>
-        @foreach (var order in orders)
-        {
-            <li>
-                <span>@order.Name (@order.People)</span>
-            </li>
-        }
-    </ul>
+    if (orders.Count > 0)
+    {
+        <ul>
+            @foreach (var order in orders)
+            {
+                <li>
+                    <span>@order.Name (@order.People)</span>
+                </li>
+            }
+        </ul>
+    }
+    else
+    {
+        <span>Няма поръчки</span>
+    }
 }
 
 @code {
