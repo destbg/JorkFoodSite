@@ -2,7 +2,10 @@
 @inject IJSRuntime JS
 @inject NavigationManager uriHelper
 
-<NavMenu />
+if (hasInitialized)
+{
+    <NavMenu />
+}
 
 <main>
     @Body
@@ -30,6 +33,7 @@
 @code {
     private string name = string.Empty;
     private bool pickedName;
+    private bool hasInitialized;
 
     protected override async Task OnInitializedAsync()
     {
@@ -40,6 +44,8 @@
         {
             pickedName = true;
         }
+
+        hasInitialized = true;
     }
 
     private async Task OnPickName()
