@@ -5,15 +5,15 @@
     if (PersonOrders.Count > 0)
     {
         <div class="orders-group">
-            @foreach (var group in PersonOrders)
-            {
-                <h1 class="title">@group.Name</h1>
-
-                <ul>
+            <ul>
+                @foreach (var group in PersonOrders)
+                {
                     @foreach (var order in group.Orders)
                     {
                         <li>
-                            <span>@order.Name (</span>
+                            <h3>@order.Name</h3>
+                            <span>@order.Count @(order.Count == 1 ? "брой" : "броя") - </span>
+
                             @for (int i = 0; i < order.People.Count; i++)
                             {
                                 var person = order.People[i];
@@ -30,11 +30,10 @@
                                     <span>, </span>
                                 }
                             }
-                            <span>) - @order.Count бр.</span>
                         </li>
                     }
-                </ul>
-            }
+                }
+            </ul>
         </div>
     }
     else
