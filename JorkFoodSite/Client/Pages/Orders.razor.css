@@ -6,7 +6,11 @@
 .orders-group {
     display: flex;
     flex-direction: column;
-    max-width: 1000px;
+    width: 800px;
+}
+
+.orders-price {
+    align-self: end;
 }
 
 ul {

@@ -8,10 +8,42 @@
             <ul>
                 @foreach (var group in AllOrders)
                 {
+                    string nameUpper = group.Name.ToUpper();
+                    string icon = "🥗";
+
+                    if (nameUpper.Contains("СУПИ"))
+                    {
+                        icon = "🥣";
+                    }
+                    else if (nameUpper.Contains("МАНДЖИЧКИ"))
+                    {
+                        icon = "🍲";
+                    }
+                    else if (nameUpper.Contains("ДЕСЕРТИ"))
+                    {
+                        icon = "🎂";
+                    }
+                    else if (nameUpper.Contains("ПРОМОЦИОНАЛНИ ПАКЕТИ"))
+                    {
+                        icon = "🔝";
+                    }
+                    else if (nameUpper.Contains("АЛАМИНУТИ"))
+                    {
+                        icon = "🍳";
+                    }
+                    else if (nameUpper.Contains("СКАРА"))
+                    {
+                        icon = "🥓";
+                    }
+                    else if (nameUpper.Contains("ХЛЯБЪТ"))
+                    {
+                        icon = "🍞";
+                    }
+
                     @foreach (var order in group.Orders)
                     {
                         <li>
-                            <h3 class="title">@order.Name</h3>
+                            <h3 class="title">@icon @order.Name</h3>
 
                             <div class="info">
                                 <div>
