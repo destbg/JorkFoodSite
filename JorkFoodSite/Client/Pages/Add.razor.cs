@@ -30,6 +30,22 @@ public partial class Add
         Regex regex = MoneyRegex();
         int startIndex = -1;
 
+        void AddProduct(int endIndex)
+        {
+            string name = string.Join(" ", split[startIndex..endIndex]);
+
+            if (!double.TryParse(regex.Match(name).Groups[1].Value.Replace(",", "."), CultureInfo.InvariantCulture, out double price))
+            {
+                price = 10000;
+            }
+
+            currentGroup.Products.Add(new ProductDTO
+            {
+                Name = name,
+                Price = price
+            });
+        }
+
         for (int i = 0; i < split.Length; i++)
         {
             string text = split[i].Trim();
@@ -38,19 +54,7 @@ public partial class Add
             {
                 if (startIndex != -1 && currentGroup != null)
                 {
-                    string name = string.Join(" ", split[startIndex..i]);
-
-                    if (!double.TryParse(regex.Match(name).Groups[1].Value.Replace(",", "."), CultureInfo.InvariantCulture, out double price))
-                    {
-                        price = 10000;
-                    }
-
-                    currentGroup.Products.Add(new ProductDTO
-                    {
-                        Name = name,
-                        Price = price
-                    });
-
+                    AddProduct(i);
                     startIndex = -1;
                 }
 
@@ -67,18 +71,7 @@ public partial class Add
                 {
                     if (startIndex != -1)
                     {
-                        string name = string.Join(" ", split[startIndex..i]);
-
-                        if (!double.TryParse(regex.Match(name).Groups[1].Value.Replace(",", "."), CultureInfo.InvariantCulture, out double price))
-                        {
-                            price = 10000;
-                        }
-
-                        currentGroup.Products.Add(new ProductDTO
-                        {
-                            Name = name,
-                            Price = price
-                        });
+                        AddProduct(i);
                     }
 
                     startIndex = i;
@@ -88,18 +81,7 @@ public partial class Add
 
         if (currentGroup != null && !string.IsNullOrEmpty(split[^1]))
         {
-            string name = string.Join(" ", split[startIndex..split.Length]);
-
-            if (!double.TryParse(regex.Match(name).Groups[1].Value.Replace(",", "."), CultureInfo.InvariantCulture, out double price))
-            {
-                price = 10000;
-            }
-
-            currentGroup.Products.Add(new ProductDTO
-            {
-                Name = name,
-                Price = price
-            });
+            AddProduct(split.Length);
         }
 
         await Http.PostAsJsonAsync("App/ReplaceMenu", list);
