@@ -34,7 +34,7 @@ public partial class Add
         {
             string text = split[i].Trim();
 
-            if (text == text.ToUpper() || text == "други" || text == "🥡 други 🥡")
+            if (text == text.ToUpper())
             {
                 if (startIndex != -1 && currentGroup != null)
                 {
@@ -88,7 +88,7 @@ public partial class Add
 
         if (currentGroup != null && !string.IsNullOrEmpty(split[^1]))
         {
-            string name = string.Join(" ", split[startIndex..^1]);
+            string name = string.Join(" ", split[startIndex..split.Length]);
 
             if (!double.TryParse(regex.Match(name).Groups[1].Value.Replace(",", "."), CultureInfo.InvariantCulture, out double price))
             {

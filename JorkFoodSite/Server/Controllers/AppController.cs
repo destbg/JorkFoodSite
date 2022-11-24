@@ -20,6 +20,7 @@ public class AppController : ControllerBase
     {
         List<ProductDTO> items = (
             from item in context.Products
+            orderby item.Order
             select new ProductDTO
             {
                 Id = item.Id,
@@ -30,11 +31,12 @@ public class AppController : ControllerBase
         ).ToList();
 
         List<ProductGroupDTO> groups = (
-            from item in context.ProductGroups
+            from grp in context.ProductGroups
+            orderby grp.Order
             select new ProductGroupDTO
             {
-                Id = item.Id,
-                Name = item.Name,
+                Id = grp.Id,
+                Name = grp.Name,
             }
         ).ToList();
 
@@ -53,6 +55,7 @@ public class AppController : ControllerBase
             from order in context.Orders
             join item in context.Products on order.ProductId equals item.Id
             where order.PersonName == userId
+            orderby item.Order
             select new PersonOrderDTO
             {
                 ProductId = item.Id,
@@ -69,7 +72,7 @@ public class AppController : ControllerBase
     public IActionResult Orders()
     {
         List<Order> orders = context.Orders.ToList();
-        List<Product> products = context.Products.ToList();
+        List<Product> products = context.Products.OrderBy(f => f.Order).ToList();
 
         List<OrderDTO> result = new();
 
@@ -148,17 +151,19 @@ public class AppController : ControllerBase
         context.ProductGroups.RemoveRange(context.ProductGroups.ToList());
         context.SaveChanges();
 
-        List<ProductGroup> groups = productGroups.ConvertAll(f => new ProductGroup
+        List<ProductGroup> groups = productGroups.Select((f, i) => new ProductGroup
         {
             Id = Guid.NewGuid().ToString("N"),
             Name = f.Name,
-            Products = f.Products.ConvertAll(s => new Product
+            Order = i + 1,
+            Products = f.Products.Select((s, i2) => new Product
             {
                 Id = Guid.NewGuid().ToString("N"),
                 Name = s.Name,
                 Price = s.Price,
-            })
-        });
+                Order = i2 + 1
+            }).ToList(),
+        }).ToList();
 
         context.ProductGroups.AddRange(groups);
 
