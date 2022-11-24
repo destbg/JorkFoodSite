@@ -89,6 +89,7 @@ public class AppController : ControllerBase
                 {
                     items.Add(new OrderDTO
                     {
+                        ProductId = product.Id,
                         Count = productOrders.Sum(f => f.Count),
                         Name = product.Name,
                         Price = product.Price,

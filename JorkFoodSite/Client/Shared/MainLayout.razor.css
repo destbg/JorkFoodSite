@@ -4,7 +4,7 @@
     justify-content: center;
     align-content: center;
     background-color: var(--bg-color);
-    position: absolute;
+    position: fixed;
     left: 0;
     top: 0;
     height: 100vh;
@@ -70,4 +70,12 @@ button {
     display: inline-block;
     top: 14px;
     left: 50px;
+}
+
+.order-panel {
+    width: 500px !important;
+    box-shadow: 0 0 10px red;
+    border-radius: 10px;
+    padding: 20px;
+    background-color: var(--card-color);
 }

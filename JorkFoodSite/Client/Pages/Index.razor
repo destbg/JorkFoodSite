@@ -7,7 +7,7 @@
         {
             <h1 class="title">@group.Name</h1>
 
-            <ProductCard Products="group.Products" Orders="Orders" OnProductClicked="OnClicked" />
+            <ProductCard Products="group.Products" Orders="Constants.Orders" OnProductClicked="OnClicked" />
         }
     </div>
 }
@@ -24,12 +24,12 @@ else
 </div>
 
 <div class="orders-drawer @(IsOrdersVisible ? "orders-visible" : "")">
-    @if (Orders != null)
+    @if (Constants.Orders != null)
     {
-        if (Orders.Count > 0)
+        if (Constants.Orders.Count > 0)
         {
             <div class="orders-content">
-                @foreach (var order in Orders)
+                @foreach (var order in Constants.Orders)
                 {
                     <div class="text">@order.Name</div>
                     <button @onclick="() => CancelOrder(order)">
@@ -43,10 +43,10 @@ else
             </div>
 
             <div>
-                Кутия за еднократна употреба @(Orders.Count)бр @((Orders.Count * 0.20).ToString("0.00"))лв
+                Кутия за еднократна употреба @(Constants.Orders.Sum(f => f.Count))бр @((Constants.Orders.Sum(f => f.Count) * 0.20).ToString("0.00"))лв
             </div>
             <div class="orders-price">
-                Общо @((Orders.Sum(f => f.Price * f.Count) + Orders.Count * 0.20).ToString("0.00"))лв
+                Общо @((Constants.Orders.Sum(f => f.Price * f.Count) + Constants.Orders.Sum(f => f.Count) * 0.20).ToString("0.00"))лв
             </div>
         }
         else

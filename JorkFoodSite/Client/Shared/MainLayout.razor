@@ -3,11 +3,15 @@
 @if (HasInitialized)
 {
     <NavMenu />
-}
 
-<main>
-    @Body
-</main>
+    <main>
+        @Body
+    </main>
+}
+else
+{
+    <span>Сложи много смешна шега тука</span>
+}
 
 @if (!PickedName)
 {
@@ -16,6 +20,22 @@
             <label>Име</label>
             <input type="text" @bind-value="Name">
             <button @onclick="OnPickName">ОК</button>
+        </div>
+    </div>
+}
+
+@if (HasUnavailableOrder)
+{
+    <div class="name-dialog" @onclick="() => HasUnavailableOrder = false">
+        <div class="panel order-panel">
+            <h3>Следните поръчки са неналични:</h3>
+            <ul>
+                @foreach (var order in OrderNames)
+                {
+                    <li>@order</li>
+                }
+            </ul>
+            <button>ОК</button>
         </div>
     </div>
 }

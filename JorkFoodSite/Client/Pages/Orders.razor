@@ -1,39 +1,53 @@
 ﻿@page "/orders"
 
-@if (PersonOrders != null)
+@if (AllOrders != null)
 {
-    if (PersonOrders.Count > 0)
+    if (AllOrders.Count > 0)
     {
         <div class="orders-group">
             <ul>
-                @foreach (var group in PersonOrders)
+                @foreach (var group in AllOrders)
                 {
                     @foreach (var order in group.Orders)
                     {
                         <li>
-                            <h3>@order.Name</h3>
-                            <span>@order.Count @(order.Count == 1 ? "брой" : "броя") - </span>
+                            <h3 class="title">@order.Name</h3>
 
-                            @for (int i = 0; i < order.People.Count; i++)
-                            {
-                                var person = order.People[i];
+                            <div class="info">
+                                <div>
+                                    <span>@order.Count @(order.Count == 1 ? "брой" : "броя") - </span>
 
-                                <span>@person.Name</span>
+                                    @for (int i = 0; i < order.People.Count; i++)
+                                    {
+                                        var person = order.People[i];
 
-                                @if (person.Count > 1)
+                                        <span>@person.Name</span>
+
+                                        @if (person.Count > 1)
+                                        {
+                                            <span style="margin-left: 5px"> @person.Count бр</span>
+                                        }
+
+                                        @if (i != order.People.Count - 1)
+                                        {
+                                            <span>, </span>
+                                        }
+                                    }
+                                </div>
+
+                                @if (Constants.PersonName == "admin")
                                 {
-                                    <span style="margin-left: 5px"> @person.Count бр</span>
+                                    <button class="card-end-btn" @onclick="() => MarkAsUnavailable(order)">Маркирай като изчерпано</button>
                                 }
-
-                                @if (i != order.People.Count - 1)
-                                {
-                                    <span>, </span>
-                                }
-                            }
+                            </div>
                         </li>
                     }
                 }
             </ul>
+
+            <div class="orders-price">
+                Общо @((AllOrders.SelectMany(f => f.Orders).Sum(f => f.Price * f.Count) + AllOrders.SelectMany(f => f.Orders).Sum(f => f.Count) * 0.20).ToString("0.00"))лв
+            </div>
         </div>
     }
     else

@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.SignalR.Client;
+﻿using JorkFoodSite.Shared;
+using Microsoft.AspNetCore.SignalR.Client;
 
 namespace JorkFoodSite.Client;
 
 public static class Constants
 {
-    public static string PersonName { get; set; }
-    public static HubConnection Connection { get; set; }
+    public static string PersonName { get; set; } = null!;
+    public static HubConnection Connection { get; set; } = null!;
+    public static List<PersonOrderDTO> Orders { get; set; } = null!;
 }

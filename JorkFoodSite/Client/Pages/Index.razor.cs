@@ -10,7 +10,6 @@ public partial class Index
     [Inject] private HttpClient Http { get; set; } = null!;
 
     public List<ProductGroupDTO>? ProductGroups { get; set; }
-    public List<PersonOrderDTO>? Orders { get; set; }
     public bool IsOrdersVisible { get; set; }
 
     protected override async Task OnInitializedAsync()
@@ -19,20 +18,29 @@ public partial class Index
 
         if (!string.IsNullOrEmpty(Constants.PersonName))
         {
-            Orders = await Http.GetFromJsonAsync<List<PersonOrderDTO>>("App/PersonOrders/" + Constants.PersonName);
+            Constants.Orders = await Http.GetFromJsonAsync<List<PersonOrderDTO>>("App/PersonOrders/" + Constants.PersonName);
         }
     }
 
-    private async Task OnClicked(ProductDTO product)
+    private static async Task OnClicked(ProductDTO product)
     {
-        if (Orders == null || !Orders.Any(f => f.ProductId == product.Id))
+        if (Constants.Orders == null || !Constants.Orders.Any(f => f.ProductId == product.Id))
         {
             await Constants.Connection.SendAsync("SubmitOrder", new SubmitOrderDTO
             {
                 PersonName = Constants.PersonName,
                 ProductId = product.Id
             });
-            Orders = await Http.GetFromJsonAsync<List<PersonOrderDTO>>("App/PersonOrders/" + Constants.PersonName);
+
+            Constants.Orders ??= new List<PersonOrderDTO>();
+
+            Constants.Orders.Add(new PersonOrderDTO
+            {
+                ProductId = product.Id,
+                Count = 1,
+                Price = product.Price,
+                Name = product.Name,
+            });
         }
     }
 
@@ -46,7 +54,7 @@ public partial class Index
         IsOrdersVisible = false;
     }
 
-    private Task CancelOrder(PersonOrderDTO order)
+    private static Task CancelOrder(PersonOrderDTO order)
     {
         if (order.Count > 1)
         {
@@ -54,7 +62,7 @@ public partial class Index
         }
         else
         {
-            Orders!.Remove(order);
+            Constants.Orders!.Remove(order);
         }
 
         return Constants.Connection.SendAsync("CancelOrder", new SubmitOrderDTO
@@ -64,7 +72,7 @@ public partial class Index
         });
     }
 
-    private async Task AddOrder(PersonOrderDTO order)
+    private static async Task AddOrder(PersonOrderDTO order)
     {
         await Constants.Connection.SendAsync("SubmitOrder", new SubmitOrderDTO
         {
