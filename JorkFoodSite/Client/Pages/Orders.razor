@@ -4,31 +4,38 @@
 {
     if (PersonOrders.Count > 0)
     {
-        <ul>
-            @foreach (var order in PersonOrders)
+        <div class="orders-group">
+            @foreach (var group in PersonOrders)
             {
-                <li>
-                    <span>@order.Name (</span>
-                    @for (int i = 0; i < order.People.Count; i++)
+                <h1 class="title">@group.Name</h1>
+
+                <ul>
+                    @foreach (var order in group.Orders)
                     {
-                        var person = order.People[i];
+                        <li>
+                            <span>@order.Name (</span>
+                            @for (int i = 0; i < order.People.Count; i++)
+                            {
+                                var person = order.People[i];
 
-                        <span>@person.Name</span>
+                                <span>@person.Name</span>
 
-                        @if (person.Count > 1)
-                        {
-                            <span style="margin-left: 5px"> @person.Count бр</span>
-                        }
+                                @if (person.Count > 1)
+                                {
+                                    <span style="margin-left: 5px"> @person.Count бр</span>
+                                }
 
-                        @if (i != order.People.Count - 1)
-                        {
-                            <span>, </span>
-                        }
+                                @if (i != order.People.Count - 1)
+                                {
+                                    <span>, </span>
+                                }
+                            }
+                            <span>) - @order.Count бр.</span>
+                        </li>
                     }
-                    <span>) - @order.Count бр.</span>
-                </li>
+                </ul>
             }
-        </ul>
+        </div>
     }
     else
     {

@@ -1,0 +1,13 @@
+﻿.title {
+    align-self: center;
+    margin: 16px 0;
+}
+
+.orders-group {
+    display: flex;
+    flex-direction: column;
+}
+
+li {
+    font-size: 16px;
+}

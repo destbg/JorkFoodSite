@@ -73,25 +73,41 @@ public class AppController : ControllerBase
     {
         List<Order> orders = context.Orders.ToList();
         List<Product> products = context.Products.OrderBy(f => f.Order).ToList();
+        List<ProductGroup> productGroups = context.ProductGroups.OrderBy(f => f.Order).ToList();
 
-        List<OrderDTO> result = new();
+        List<OrderGroupDTO> result = new();
 
-        foreach (Product product in products)
+        foreach (ProductGroup group in productGroups)
         {
-            List<Order> productOrders = orders.FindAll(f => f.ProductId == product.Id);
+            List<OrderDTO> items = new();
 
-            if (productOrders.Count > 0)
+            foreach (Product product in products.Where(f => f.ProductGroupId == group.Id))
             {
-                result.Add(new OrderDTO
+                List<Order> productOrders = orders.FindAll(f => f.ProductId == product.Id);
+
+                if (productOrders.Count > 0)
                 {
-                    Count = productOrders.Sum(f => f.Count),
-                    Name = product.Name,
-                    Price = product.Price,
-                    People = productOrders.ConvertAll(f => new OrderPersonDTO
+                    items.Add(new OrderDTO
                     {
-                        Count = f.Count,
-                        Name = f.PersonName,
-                    })
+                        Count = productOrders.Sum(f => f.Count),
+                        Name = product.Name,
+                        Price = product.Price,
+                        People = productOrders.ConvertAll(f => new OrderPersonDTO
+                        {
+                            Count = f.Count,
+                            Name = f.PersonName,
+                        })
+                    });
+                }
+            }
+
+            if (items.Count > 0)
+            {
+                result.Add(new OrderGroupDTO
+                {
+                    Id = group.Id,
+                    Name = group.Name,
+                    Orders = items
                 });
             }
         }

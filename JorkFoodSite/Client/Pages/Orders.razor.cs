@@ -8,10 +8,10 @@ public partial class Orders
 {
     [Inject] private HttpClient Http { get; set; } = null!;
 
-    public List<OrderDTO>? PersonOrders { get; set; }
+    public List<OrderGroupDTO>? PersonOrders { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        PersonOrders = await Http.GetFromJsonAsync<List<OrderDTO>>("App/Orders");
+        PersonOrders = await Http.GetFromJsonAsync<List<OrderGroupDTO>>("App/Orders");
     }
 }
