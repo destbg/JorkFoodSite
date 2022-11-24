@@ -1,4 +1,5 @@
 using JorkFoodSite.Server;
+using JorkFoodSite.Server.Hubs;
 
 WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
@@ -6,6 +7,7 @@ WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
+builder.Services.AddSignalR();
 
 builder.Services.AddDbContext<AppDbContext>();
 
@@ -32,6 +34,7 @@ app.UseRouting();
 
 app.MapRazorPages();
 app.MapControllers();
+app.MapHub<AppHub>("/hub");
 app.MapFallbackToFile("index.html");
 
 app.Run();

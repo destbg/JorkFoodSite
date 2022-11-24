@@ -1,5 +1,6 @@
 ﻿using JorkFoodSite.Shared;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.SignalR.Client;
 using System.Net.Http.Json;
 
 namespace JorkFoodSite.Client.Pages;
@@ -26,7 +27,7 @@ public partial class Index
     {
         if (Orders == null || !Orders.Any(f => f.ProductId == product.Id))
         {
-            await Http.PostAsJsonAsync("App/SubmitOrder", new SubmitOrderDTO
+            await Constants.Connection.SendAsync("SubmitOrder", new SubmitOrderDTO
             {
                 PersonName = Constants.PersonName,
                 ProductId = product.Id
@@ -56,16 +57,16 @@ public partial class Index
             Orders!.Remove(order);
         }
 
-        return Http.PostAsJsonAsync("App/CancelOrder", new SubmitOrderDTO
+        return Constants.Connection.SendAsync("CancelOrder", new SubmitOrderDTO
         {
             PersonName = Constants.PersonName,
-            ProductId = order.ProductId,
+            ProductId = order.ProductId
         });
     }
 
     private async Task AddOrder(PersonOrderDTO order)
     {
-        await Http.PostAsJsonAsync("App/SubmitOrder", new SubmitOrderDTO
+        await Constants.Connection.SendAsync("SubmitOrder", new SubmitOrderDTO
         {
             PersonName = Constants.PersonName,
             ProductId = order.ProductId

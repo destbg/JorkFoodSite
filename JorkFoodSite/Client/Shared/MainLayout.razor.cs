@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.SignalR.Client;
 using Microsoft.JSInterop;
 
 namespace JorkFoodSite.Client.Shared;
@@ -21,6 +22,12 @@ public partial class MainLayout
         {
             PickedName = true;
         }
+
+        Constants.Connection = new HubConnectionBuilder()
+            .WithUrl(URIHelper.ToAbsoluteUri("/hub"))
+            .Build();
+
+        await Constants.Connection.StartAsync();
 
         HasInitialized = true;
     }
