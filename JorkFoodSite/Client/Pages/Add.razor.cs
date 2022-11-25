@@ -85,7 +85,7 @@ public partial class Add
         }
 
         await Http.PostAsJsonAsync("App/ReplaceMenu", list);
-        URIHelper.NavigateTo("/");
+        URIHelper.NavigateTo("/home");
     }
 
     [GeneratedRegex("([0-9,]+)[ ]*лв")]

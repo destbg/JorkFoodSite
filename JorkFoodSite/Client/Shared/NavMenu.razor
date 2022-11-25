@@ -1,9 +1,11 @@
-﻿<nav>
-    <a href="/">Меню</a>
-    <a href="/orders">Поръчки</a>
-    @if (Constants.PersonName == "admin")
-    {
-        <a href="/add">Добави</a>
-    }
-    <div class="dot"></div>
-</nav>
+﻿<div class="nav-wrapper">
+    <nav>
+        <NavLink href="/home">Меню</NavLink>
+        <NavLink href="/orders">Поръчки</NavLink>
+        @if (Constants.PersonName == "admin")
+        {
+            <NavLink href="/add">Добави</NavLink>
+        }
+        <div class="dot"></div>
+    </nav>
+</div>

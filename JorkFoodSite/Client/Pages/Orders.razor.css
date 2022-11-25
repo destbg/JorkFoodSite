@@ -1,6 +1,6 @@
 ﻿.title {
     align-self: center;
-    margin: 16px 0;
+    margin: 4px 0;
 }
 
 .orders-group {
@@ -11,6 +11,7 @@
 
 .orders-price {
     align-self: end;
+    margin-bottom: 10px;
 }
 
 ul {
