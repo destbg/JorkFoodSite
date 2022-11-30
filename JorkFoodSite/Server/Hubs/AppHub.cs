@@ -55,6 +55,17 @@ public class AppHub : Hub
         await Clients.All.SendAsync("OrdersChanged");
     }
 
+    public async Task CancelFullOrder(SubmitOrderDTO order)
+    {
+        Order orderEntity = context.Orders.FirstOrDefault(f => f.PersonName == order.PersonName && f.ProductId == order.ProductId);
+
+        context.Orders.Remove(orderEntity);
+
+        context.SaveChanges();
+
+        await Clients.All.SendAsync("OrdersChanged");
+    }
+
     public async Task MarkAsUnavailable(string id, string name)
     {
         List<Order> orders = context.Orders.Where(f => f.ProductId == id).ToList();

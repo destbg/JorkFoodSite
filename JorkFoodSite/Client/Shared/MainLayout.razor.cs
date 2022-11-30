@@ -16,8 +16,6 @@ public partial class MainLayout
     public bool PickedName { get; set; } = true;
     public bool HasInitialized { get; set; }
     public bool HasUnavailableOrder { get; set; }
-    public bool IsOrdersVisible { get; set; }
-    public bool IsOrdersClosing { get; set; }
     public List<string> OrderNames { get; set; } = new();
 
     protected override async Task OnInitializedAsync()
@@ -68,48 +66,5 @@ public partial class MainLayout
             await JS.InvokeVoidAsync("window.localStorage.setItem", "Name", Name);
             URIHelper.NavigateTo(URIHelper.Uri, forceLoad: true);
         }
-    }
-
-    private void OpenOrders()
-    {
-        IsOrdersVisible = true;
-    }
-
-    private async Task CloseOrders()
-    {
-        IsOrdersClosing = true;
-        StateHasChanged();
-        await Task.Delay(100);
-        IsOrdersVisible = false;
-        IsOrdersClosing = false;
-        StateHasChanged();
-    }
-
-    private static Task CancelOrder(PersonOrderDTO order)
-    {
-        if (order.Count > 1)
-        {
-            order.Count--;
-        }
-        else
-        {
-            Constants.Orders!.Remove(order);
-        }
-
-        return Constants.Connection.SendAsync("CancelOrder", new SubmitOrderDTO
-        {
-            PersonName = Constants.PersonName,
-            ProductId = order.ProductId
-        });
-    }
-
-    private static async Task AddOrder(PersonOrderDTO order)
-    {
-        await Constants.Connection.SendAsync("SubmitOrder", new SubmitOrderDTO
-        {
-            PersonName = Constants.PersonName,
-            ProductId = order.ProductId
-        });
-        order.Count++;
     }
 }

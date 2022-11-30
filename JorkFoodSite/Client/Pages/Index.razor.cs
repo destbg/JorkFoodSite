@@ -5,7 +5,7 @@ using System.Net.Http.Json;
 
 namespace JorkFoodSite.Client.Pages;
 
-public partial class Index
+public partial class Index : IDisposable
 {
     [Inject] private HttpClient Http { get; set; } = null!;
 
@@ -13,6 +13,8 @@ public partial class Index
 
     protected override async Task OnInitializedAsync()
     {
+        Constants.OrdersChanged += StateHasChanged;
+
         ProductGroups = await Http.GetFromJsonAsync<List<ProductGroupDTO>>("App/Menu");
     }
 
@@ -35,6 +37,25 @@ public partial class Index
                 Price = product.Price,
                 Name = product.Name,
             });
+            Constants.ChangeOrders();
         }
+        else
+        {
+            await Constants.Connection.SendAsync("CancelFullOrder", new SubmitOrderDTO
+            {
+                PersonName = Constants.PersonName,
+                ProductId = product.Id
+            });
+
+            Constants.Orders.RemoveAll(f => f.ProductId == product.Id);
+            Constants.ChangeOrders();
+        }
+    }
+
+    public void Dispose()
+    {
+        GC.SuppressFinalize(this);
+
+        Constants.OrdersChanged -= StateHasChanged;
     }
 }
