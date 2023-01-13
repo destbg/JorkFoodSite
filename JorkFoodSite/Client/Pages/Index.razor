@@ -5,7 +5,7 @@
     <div class="card-group">
         @foreach (var group in ProductGroups)
         {
-            <h1 class="title">@group.Name</h1>
+            <h2 class="title">@group.Name</h2>
 
             <ProductCard Products="group.Products" Orders="Constants.Orders" OnProductClicked="OnClicked" />
         }

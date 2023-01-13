@@ -4,16 +4,7 @@
         @foreach (var product in Products)
         {
             <div class="card @(Orders != null && Orders.Any(f => f.ProductId == product.Id) ? "card-active" : string.Empty)" @onclick="() => OnProductClicked.InvokeAsync(product)">
-                <div class="card-content">
-                    <div class="card-info-wrapper">
-                        <div class="card-info">
-                            <i class="fa-duotone fa-apartment"></i>
-                            <div class="card-info-title">
-                                <h3>@product.Name</h3>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <h3>@product.Name</h3>
             </div>
         }
     </div>

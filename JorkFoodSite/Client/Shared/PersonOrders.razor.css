@@ -5,6 +5,12 @@
     right: 10px;
 }
 
+.close-button {
+    display: none;
+    margin-left: .5em;
+    margin-bottom: .5em;
+}
+
 .orders-container {
     position: fixed;
     top: 0;
@@ -29,6 +35,7 @@
     height: 100vh;
     padding: 10px;
     z-index: 11;
+    max-width: calc(100vw - 30px);
     background-color: var(--card-color);
     animation: open-orders 100ms ease-in;
 }
@@ -95,5 +102,11 @@
 
     to {
         opacity: 0;
+    }
+}
+
+@media(max-width: 800px) {
+    .close-button {
+        display: block;
     }
 }

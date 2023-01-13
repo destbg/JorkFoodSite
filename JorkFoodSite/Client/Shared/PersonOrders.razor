@@ -8,6 +8,9 @@
     </div>
 
     <div class="orders-drawer @(IsOrdersClosing ? "orders-drawer-closing" : "")">
+        <div class="close-button" @onclick="CloseOrders">
+            <i class="fa-solid fa-xmark"></i>
+        </div>
         @if (Constants.Orders != null)
         {
             if (Constants.Orders.Count > 0)
