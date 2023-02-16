@@ -18,7 +18,7 @@ public class AppController : ControllerBase
     [HttpGet("Menu")]
     public IActionResult Menu()
     {
-        List<ProductDTO> items = (
+        ILookup<string, ProductDTO> items = (
             from item in context.Products
             orderby item.Order
             select new ProductDTO
@@ -27,8 +27,9 @@ public class AppController : ControllerBase
                 ProductGroupId = item.ProductGroupId,
                 Name = item.Name,
                 Price = item.Price,
+                BoxPrice = item.BoxPrice,
             }
-        ).ToList();
+        ).ToLookup(f => f.ProductGroupId, f => f);
 
         List<ProductGroupDTO> groups = (
             from grp in context.ProductGroups
@@ -42,7 +43,7 @@ public class AppController : ControllerBase
 
         foreach (ProductGroupDTO group in groups)
         {
-            group.Products = items.FindAll(f => f.ProductGroupId == group.Id);
+            group.Products = items[group.Id].ToList();
         }
 
         return Ok(groups);
@@ -61,6 +62,7 @@ public class AppController : ControllerBase
                 ProductId = item.Id,
                 Name = item.Name,
                 Price = item.Price,
+                BoxPrice = item.BoxPrice,
                 Count = order.Count,
             }
         ).ToList();
@@ -93,6 +95,7 @@ public class AppController : ControllerBase
                         Count = productOrders.Sum(f => f.Count),
                         Name = product.Name,
                         Price = product.Price,
+                        BoxPrice = product.BoxPrice,
                         People = productOrders.ConvertAll(f => new OrderPersonDTO
                         {
                             Count = f.Count,
@@ -134,7 +137,8 @@ public class AppController : ControllerBase
                 Id = Guid.NewGuid().ToString("N"),
                 Name = s.Name,
                 Price = s.Price,
-                Order = i2 + 1
+                Order = i2 + 1,
+                BoxPrice = s.BoxPrice,
             }).ToList(),
         }).ToList();
 

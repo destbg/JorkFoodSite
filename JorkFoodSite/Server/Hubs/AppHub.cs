@@ -28,7 +28,7 @@ public class AppHub : Hub
                 Id = Guid.NewGuid().ToString("N"),
                 PersonName = order.PersonName,
                 ProductId = order.ProductId,
-                Count = 1
+                Count = 1,
             });
         }
 

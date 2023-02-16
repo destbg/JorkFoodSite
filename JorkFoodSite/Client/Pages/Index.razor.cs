@@ -35,6 +35,7 @@ public partial class Index : IDisposable
                 ProductId = product.Id,
                 Count = 1,
                 Price = product.Price,
+                BoxPrice = product.BoxPrice,
                 Name = product.Name,
             });
             Constants.ChangeOrders();
@@ -44,7 +45,7 @@ public partial class Index : IDisposable
             await Constants.Connection.SendAsync("CancelFullOrder", new SubmitOrderDTO
             {
                 PersonName = Constants.PersonName,
-                ProductId = product.Id
+                ProductId = product.Id,
             });
 
             Constants.Orders.RemoveAll(f => f.ProductId == product.Id);

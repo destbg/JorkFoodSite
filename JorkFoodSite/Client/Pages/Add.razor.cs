@@ -41,8 +41,11 @@ public partial class Add
 
             currentGroup.Products.Add(new ProductDTO
             {
-                Name = name,
-                Price = price
+                Name = name.Replace("( промо пакетите за деня не могат да се комбинират с други наши промоции и или отстъпки )", ""),
+                Price = price,
+                BoxPrice = currentGroup.Name.Contains("ПРОМО") ? .4
+                    : currentGroup.Name.Contains("ХОЛЯБ") ? 0
+                    : .2,
             });
         }
 
@@ -61,9 +64,16 @@ public partial class Add
                 currentGroup = new ProductGroupDTO
                 {
                     Name = text,
-                    Products = new List<ProductDTO>()
+                    Products = new List<ProductDTO>(),
                 };
-                list.Add(currentGroup);
+                if (text.Contains("ПРОМО"))
+                {
+                    list.Insert(0, currentGroup);
+                }
+                else
+                {
+                    list.Add(currentGroup);
+                }
             }
             else if (currentGroup != null)
             {

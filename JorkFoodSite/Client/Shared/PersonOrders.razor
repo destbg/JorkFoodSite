@@ -33,7 +33,7 @@
                     Кутия за еднократна употреба @(Constants.Orders.Sum(f => f.Count))бр @((Constants.Orders.Sum(f => f.Count) * 0.20).ToString("0.00"))лв
                 </div>
                 <div class="orders-price">
-                    Общо @((Constants.Orders.Sum(f => f.Price * f.Count) + Constants.Orders.Sum(f => f.Count) * 0.20).ToString("0.00"))лв
+                    Общо @(Constants.Orders.Sum(f => (f.Price + f.BoxPrice) * f.Count).ToString("0.00"))лв
                 </div>
             }
             else

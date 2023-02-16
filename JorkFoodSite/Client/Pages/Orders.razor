@@ -78,7 +78,7 @@
             </ul>
 
             <div class="orders-price">
-                Общо @((AllOrders.SelectMany(f => f.Orders).Sum(f => f.Price * f.Count) + AllOrders.SelectMany(f => f.Orders).Sum(f => f.Count) * 0.20).ToString("0.00"))лв
+                Общо @(AllOrders.SelectMany(f => f.Orders).Sum(f => (f.Price + f.BoxPrice) * f.Count).ToString("0.00"))лв
             </div>
         </div>
     }
