@@ -12,7 +12,7 @@ public partial class MainLayout
     [Inject] private HttpClient Http { get; set; } = null!;
     [Inject] private NavigationManager URIHelper { get; set; } = null!;
 
-    public string Name { get; set; } = string.Empty;
+    public string Name { get; set; } = null!;
     public bool PickedName { get; set; } = true;
     public bool HasInitialized { get; set; }
     public bool HasUnavailableOrder { get; set; }
@@ -34,12 +34,15 @@ public partial class MainLayout
         }
         else
         {
+            Constants.TranslateName();
+            Name = Constants.PersonName;
+
             Constants.Orders = await Http.GetFromJsonAsync<List<PersonOrderDTO>>("App/PersonOrders/" + Constants.PersonName);
         }
 
         Constants.Connection.On("OrderUnavailable", async (string id, string name) =>
         {
-            if (Constants.PersonName != "admin" && Constants.Orders!.Any(f => f.ProductId == id))
+            if (Constants.PersonName != "Админ" && Constants.Orders!.Any(f => f.ProductId == id))
             {
                 if (!HasUnavailableOrder)
                 {
@@ -63,6 +66,8 @@ public partial class MainLayout
         if (!string.IsNullOrEmpty(Name))
         {
             Constants.PersonName = Name;
+            Constants.TranslateName();
+            Name = Constants.PersonName;
             await JS.InvokeVoidAsync("window.localStorage.setItem", "Name", Name);
             URIHelper.NavigateTo(URIHelper.Uri, forceLoad: true);
         }
