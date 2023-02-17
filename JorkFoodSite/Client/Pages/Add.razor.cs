@@ -44,7 +44,7 @@ public partial class Add
                 Name = name.Replace("( промо пакетите за деня не могат да се комбинират с други наши промоции и или отстъпки )", ""),
                 Price = price,
                 BoxPrice = currentGroup.Name.Contains("ПРОМО") ? .4
-                    : currentGroup.Name.Contains("ХОЛЯБ") ? 0
+                    : currentGroup.Name.Contains("ХЛЯБ") ? 100000
                     : .2,
             });
         }
