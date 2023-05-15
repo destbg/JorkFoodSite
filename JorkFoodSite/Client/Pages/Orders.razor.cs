@@ -22,11 +22,6 @@ public partial class Orders : IDisposable
         AllOrders = await Http.GetFromJsonAsync<List<OrderGroupDTO>>("App/Orders");
     }
 
-    public static async Task MarkAsUnavailable(OrderDTO order)
-    {
-        await Constants.Connection.InvokeAsync("MarkAsUnavailable", order.ProductId, order.Name);
-    }
-
     public void Dispose()
     {
         GC.SuppressFinalize(this);

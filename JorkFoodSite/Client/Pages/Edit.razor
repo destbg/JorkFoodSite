@@ -1,0 +1,101 @@
+﻿@page "/edit"
+
+@if (ProductGroups != null)
+{
+    <div class="card-group">
+        @foreach (var group in ProductGroups)
+        {
+            bool isPromo = group.Name.Contains("ПРОМО");
+
+            <h2 class="title">@group.Name</h2>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Title</th>
+                        <th>Ingredients</th>
+                        <th style="width: 6em">Price</th>
+                        <th style="width: 6em">Grams</th>
+                        <th style="width: 6em">Box count</th>
+                        <th style="width: 6em">Box price</th>
+                        @if (isPromo)
+                        {
+                            <th style="width: 8em">Old promo price</th>
+                        }
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var product in group.Products)
+                    {
+                        <tr @onclick="() => EditProductClicked(product, isPromo)">
+                            <td>@product.Title</td>
+                            <td>@product.Ingredients</td>
+                            <td>@product.Price.ToString("0.00")</td>
+                            <td>@product.Grams</td>
+                            <td>@product.BoxCount</td>
+                            <td>@product.BoxPrice.ToString("0.00")</td>
+                            @if (isPromo)
+                            {
+                                <td>@product.OldPromoPrice?.ToString("0.00")</td>
+                            }
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+}
+else
+{
+    <span>Менюто зарежда</span>
+}
+
+@if (EditProduct != null)
+{
+    <div class="dialog-wrapper">
+        <div class="dialog">
+            <h1>@EditProduct.Title</h1>
+            <div class="dialog-content">
+                <div class="form-group">
+                    <label for="Title">Title</label>
+                    <InputText id="Title" @bind-Value="EditProduct.Title" />
+                </div>
+                <div class="form-group">
+                    <label for="Ingredients">Ingredients</label>
+                    <InputText id="Ingredients" @bind-Value="EditProduct.Ingredients" />
+                </div>
+                <div class="form-group">
+                    <label for="BoxCount">Box count</label>
+                    <InputNumber id="BoxCount" @bind-Value="EditProduct.BoxCount" />
+                </div>
+                <div class="form-group">
+                    <label for="BoxPrice">Box price</label>
+                    <InputNumber id="BoxPrice" @bind-Value="EditProduct.BoxPrice" />
+                </div>
+                <div class="form-group">
+                    <label for="Grams">Grams</label>
+                    <InputNumber id="Grams" @bind-Value="EditProduct.Grams" />
+                </div>
+                <div class="form-group">
+                    <label for="Price">Price</label>
+                    <InputNumber id="Price" @bind-Value="EditProduct.Price" />
+                </div>
+                @if (EditIsPromo)
+                {
+                    <div class="form-group">
+                        <label for="OldPromoPrice">Old promo price</label>
+                        <InputNumber id="OldPromoPrice" @bind-Value="EditProduct.OldPromoPrice" />
+                    </div>
+                }
+            </div>
+            <div class="dialog-footer">
+                <button @onclick="CancelEdit">
+                    Откажи
+                </button>
+                <button @onclick="OnConfirmEdit">
+                    Запази
+                </button>
+            </div>
+        </div>
+    </div>
+}

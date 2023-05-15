@@ -1,4 +1,8 @@
 ﻿<div class="person-orders-btn">
+    <p>
+        <span>@(Constants.Orders?.Sum(f => (f.Price + (f.BoxPrice * f.BoxCount)) * f.Count).ToString("0.00") ?? "0.00")</span>
+        <span>лв</span>
+    </p>
     <i class="fa-solid fa-bag-shopping" @onclick="OpenOrders" />
 </div>
 
@@ -22,7 +26,7 @@
                         <button @onclick="() => CancelOrder(order)">
                             <i class="fa-solid fa-minus" />
                         </button>
-                        <div class="count">Брой @order.Count</div>
+                        <div class="count">@order.Count</div>
                         <button @onclick="() => AddOrder(order)">
                             <i class="fa-solid fa-plus" />
                         </button>
@@ -30,10 +34,10 @@
                 </div>
 
                 <div>
-                    Кутия за еднократна употреба @(Constants.Orders.Sum(f => f.Count))бр @((Constants.Orders.Sum(f => f.Count) * 0.20).ToString("0.00"))лв
+                    Кутия за еднократна употреба @(Constants.Orders.Sum(f => f.Count * f.BoxCount))бр @(Constants.Orders.Sum(f => f.Count * f.BoxCount * f.BoxPrice).ToString("0.00"))лв
                 </div>
                 <div class="orders-price">
-                    Общо @(Constants.Orders.Sum(f => (f.Price + f.BoxPrice) * f.Count).ToString("0.00"))лв
+                    Общо @(Constants.Orders.Sum(f => (f.Price + (f.BoxPrice * f.BoxCount)) * f.Count).ToString("0.00"))лв
                 </div>
             }
             else

@@ -65,17 +65,4 @@ public class AppHub : Hub
 
         await Clients.All.SendAsync("OrdersChanged");
     }
-
-    public async Task MarkAsUnavailable(string id, string name)
-    {
-        List<Order> orders = context.Orders.Where(f => f.ProductId == id).ToList();
-        List<Product> products = context.Products.Where(f => f.Id == id).ToList();
-
-        context.Orders.RemoveRange(orders);
-        context.Products.RemoveRange(products);
-        context.SaveChanges();
-
-        await Clients.All.SendAsync("OrderUnavailable", id, name);
-        await Clients.All.SendAsync("OrdersChanged");
-    }
 }

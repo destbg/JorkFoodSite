@@ -27,25 +27,75 @@ public partial class Add
 
         List<ProductGroupDTO> list = new();
         ProductGroupDTO? currentGroup = null;
-        Regex regex = MoneyRegex();
+        Regex moneyRegex = MoneyRegex();
+        Regex gramRegex = GramRegex();
+        Regex promoRegex = PromoRegex();
+        Regex quantityRegex = QuantityRegex();
+        Regex ingredientsRegex = IngredientsRegex();
         int startIndex = -1;
 
         void AddProduct(int endIndex)
         {
-            string name = string.Join(" ", split[startIndex..endIndex]);
+            string title = string.Join(" ", split[startIndex..endIndex]);
 
-            if (!double.TryParse(regex.Match(name).Groups[1].Value.Replace(",", "."), CultureInfo.InvariantCulture, out double price))
+            Match promoMatch = promoRegex.Match(title);
+
+            if (promoMatch.Success)
             {
-                price = 10000;
+                double promoPrice = ParseDouble(promoMatch, 2);
+                double oldPrice = ParseDouble(promoMatch, 3);
+
+                currentGroup.Products.Add(new ProductDTO
+                {
+                    Title = promoMatch.Groups[1].Value,
+                    Ingredients = title.Replace(promoMatch.Value, "")
+                        .Replace("( промо пакетите за деня не могат да се комбинират с други наши промоции и или отстъпки )", "")
+                        .Trim(),
+                    Price = promoPrice,
+                    OldPromoPrice = oldPrice,
+                    BoxCount = 2,
+                    BoxPrice = .2,
+                });
+
+                return;
+            }
+
+            Match moneyMatch = moneyRegex.Match(title);
+            double price = ParseDouble(moneyMatch, 1);
+            if (moneyMatch.Success)
+            {
+                title = title.Replace(moneyMatch.Value, "");
+            }
+
+            Match gramMatch = gramRegex.Match(title);
+            int? grams = ParseInt(gramMatch, 1);
+            if (gramMatch.Success)
+            {
+                title = title.Replace(gramMatch.Value, "");
+            }
+
+            Match quantityMatch = quantityRegex.Match(title);
+            if (quantityMatch.Success)
+            {
+                title = title.Replace(quantityMatch.Value, quantityMatch.Value.Replace("/", " ").Replace(".", ""));
+            }
+
+            Match ingredientsMatch = ingredientsRegex.Match(title);
+            string? ingredients = null;
+            if (ingredientsMatch.Success && !ingredientsMatch.Value.All(f => char.IsLetter(f) || f == '/' || f == ' '))
+            {
+                title = title.Replace(ingredientsMatch.Value, "");
+                ingredients = ingredientsMatch.Value.Replace("/", "");
             }
 
             currentGroup.Products.Add(new ProductDTO
             {
-                Name = name.Replace("( промо пакетите за деня не могат да се комбинират с други наши промоции и или отстъпки )", ""),
+                Title = title.Trim(' ', ',', '.', '/').Replace("  ", " "),
+                Ingredients = ingredients,
+                Grams = grams,
                 Price = price,
-                BoxPrice = currentGroup.Name.Contains("ПРОМО") ? .4
-                    : currentGroup.Name.Contains("ХЛЯБ") ? 100000
-                    : .2,
+                BoxCount = currentGroup.Name.Contains("ХЛЯБ") ? 0 : 1,
+                BoxPrice = currentGroup.Name.Contains("ХЛЯБ") ? 0 : .2,
             });
         }
 
@@ -77,7 +127,7 @@ public partial class Add
             }
             else if (currentGroup != null)
             {
-                if (regex.IsMatch(text))
+                if (moneyRegex.IsMatch(text))
                 {
                     if (startIndex != -1)
                     {
@@ -98,6 +148,38 @@ public partial class Add
         URIHelper.NavigateTo("/home");
     }
 
-    [GeneratedRegex("([0-9,]+)[ ]*лв")]
+    private static double ParseDouble(Match match, int index)
+    {
+        if (!match.Success || !double.TryParse(match.Groups[index].Value.Replace(",", "."), CultureInfo.InvariantCulture, out double val))
+        {
+            return 10000;
+        }
+
+        return val;
+    }
+
+    private static int? ParseInt(Match match, int index)
+    {
+        if (!match.Success || !int.TryParse(match.Groups[index].Value, out int val))
+        {
+            return null;
+        }
+
+        return val;
+    }
+
+    [GeneratedRegex("([0-9,.]+)[ ]*лв")]
     private static partial Regex MoneyRegex();
+
+    [GeneratedRegex("([0-9]+)[ ]*гр?")]
+    private static partial Regex GramRegex();
+
+    [GeneratedRegex("\\/?([0-9]+)[ ]*бр\\/?")]
+    private static partial Regex QuantityRegex();
+
+    [GeneratedRegex("\\/.+\\/")]
+    private static partial Regex IngredientsRegex();
+
+    [GeneratedRegex(".?([а-яА-Я ]+) [>]+ [а-яА-Я ]+([0-9,]+)[ ]*лв[а-яА-Я \\(]+([0-9,.]+)[ ]*лв[ \\)]+")]
+    private static partial Regex PromoRegex();
 }

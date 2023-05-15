@@ -4,6 +4,7 @@
     margin: 1em auto;
     max-width: 1400px;
     gap: 1em;
+    width: 100%;
 }
 
 .card {
@@ -22,6 +23,34 @@
 
 .card-active {
     background-color: rgb(50, 50, 50) !important;
+}
+
+.grayed-out {
+    color: darkgray;
+}
+
+.ingredients {
+    color: lightgray;
+    margin: 0;
+    padding: 0;
+}
+
+.card-title {
+    margin-bottom: .5em;
+}
+
+.card-footer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: .5em;
+    margin-top: .5em;
+}
+
+.separator {
+    height: 20px;
+    width: 1px;
+    background-color: dimgray;
 }
 
 @media(max-width: 1400px) {

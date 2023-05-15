@@ -158,3 +158,11 @@ nav {
         transition: all 0.2s ease-in-out;
         opacity: 1;
     }
+
+    nav a:nth-child(4):hover ~ .dot {
+        -webkit-transform: translateX(360px);
+        transform: translateX(360px);
+        -webkit-transition: all 0.2s ease-in-out;
+        transition: all 0.2s ease-in-out;
+        opacity: 1;
+    }

@@ -15,8 +15,6 @@ public partial class MainLayout
     public string Name { get; set; } = null!;
     public bool PickedName { get; set; } = true;
     public bool HasInitialized { get; set; }
-    public bool HasUnavailableOrder { get; set; }
-    public List<string> OrderNames { get; set; } = new();
 
     protected override async Task OnInitializedAsync()
     {
@@ -39,22 +37,6 @@ public partial class MainLayout
 
             Constants.Orders = await Http.GetFromJsonAsync<List<PersonOrderDTO>>("App/PersonOrders/" + Constants.PersonName);
         }
-
-        Constants.Connection.On("OrderUnavailable", async (string id, string name) =>
-        {
-            if (Constants.PersonName != "Админ" && Constants.Orders!.Any(f => f.ProductId == id))
-            {
-                if (!HasUnavailableOrder)
-                {
-                    OrderNames = new();
-                }
-
-                OrderNames.Add(name);
-                HasUnavailableOrder = true;
-                Constants.Orders = await Http.GetFromJsonAsync<List<PersonOrderDTO>>("App/PersonOrders/" + Constants.PersonName);
-                await InvokeAsync(StateHasChanged);
-            }
-        });
 
         await Constants.Connection.StartAsync();
 

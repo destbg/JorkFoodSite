@@ -22,7 +22,7 @@ public partial class PersonOrders
     {
         IsOrdersClosing = true;
         StateHasChanged();
-        await Task.Delay(100);
+        await Task.Delay(80);
         IsOrdersVisible = false;
         IsOrdersClosing = false;
         StateHasChanged();

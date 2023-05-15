@@ -7,4 +7,5 @@ public class PersonOrderDTO
     public int Count { get; set; }
     public double Price { get; set; }
     public double BoxPrice { get; set; }
+    public double BoxCount { get; set; }
 }

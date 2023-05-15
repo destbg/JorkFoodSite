@@ -67,10 +67,7 @@
                                     }
                                 </div>
 
-                                @if (Constants.PersonName == "Админ")
-                                {
-                                    <button class="card-end-btn" @onclick="() => MarkAsUnavailable(order)">Маркирай като изчерпано</button>
-                                }
+                                <span>@(((order.Price + (order.BoxPrice * order.BoxCount)) * order.Count).ToString("0.00")) лв</span>
                             </div>
                         </li>
                     }
@@ -78,7 +75,7 @@
             </ul>
 
             <div class="orders-price">
-                Общо @(AllOrders.SelectMany(f => f.Orders).Sum(f => (f.Price + f.BoxPrice) * f.Count).ToString("0.00"))лв
+                Общо @(AllOrders.SelectMany(f => f.Orders).Sum(f => (f.Price + (f.BoxPrice * f.BoxCount)) * f.Count).ToString("0.00"))лв
             </div>
         </div>
     }

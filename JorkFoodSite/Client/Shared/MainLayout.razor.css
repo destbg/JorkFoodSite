@@ -79,3 +79,12 @@ button {
     padding: 20px;
     background-color: var(--card-color);
 }
+
+.header {
+    background-color: var(--bg-color);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    box-shadow: 0 0 10px var(--bg-color);
+}

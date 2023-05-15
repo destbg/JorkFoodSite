@@ -36,7 +36,8 @@ public partial class Index : IDisposable
                 Count = 1,
                 Price = product.Price,
                 BoxPrice = product.BoxPrice,
-                Name = product.Name,
+                Name = product.Title,
+                BoxCount = product.BoxCount,
             });
             Constants.ChangeOrders();
         }

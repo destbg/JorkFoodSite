@@ -4,7 +4,24 @@
         @foreach (var product in Products)
         {
             <div class="card @(Orders != null && Orders.Any(f => f.ProductId == product.Id) ? "card-active" : string.Empty)" @onclick="() => OnProductClicked.InvokeAsync(product)">
-                <h3>@product.Name</h3>
+                <h3 class="card-title">@product.Title</h3>
+                @if (product.Ingredients != null)
+                {
+                    <p class="ingredients">@product.Ingredients</p>
+                }
+                <div class="card-footer">
+                    <h3>@product.Price.ToString("0.00")</h3>
+                    @if (product.Grams != null)
+                    {
+                        <div class="separator"></div>
+                        <h3 class="grayed-out">@product.Grams.Value г</h3>
+                    }
+                    @if (product.OldPromoPrice != null)
+                    {
+                        <div class="separator"></div>
+                        <h3 class="grayed-out">стара цена @product.OldPromoPrice.Value.ToString("0.00")</h3>
+                    }
+                </div>
             </div>
         }
     </div>

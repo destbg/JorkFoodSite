@@ -15,7 +15,7 @@ public class AppController : ControllerBase
         this.context = context;
     }
 
-    [HttpGet("Menu")]
+    [HttpGet(nameof(Menu))]
     public IActionResult Menu()
     {
         ILookup<string, ProductDTO> items = (
@@ -25,9 +25,13 @@ public class AppController : ControllerBase
             {
                 Id = item.Id,
                 ProductGroupId = item.ProductGroupId,
-                Name = item.Name,
+                Title = item.Title,
                 Price = item.Price,
                 BoxPrice = item.BoxPrice,
+                BoxCount = item.BoxCount,
+                Grams = item.Grams,
+                Ingredients = item.Ingredients,
+                OldPromoPrice = item.OldPromoPrice,
             }
         ).ToLookup(f => f.ProductGroupId, f => f);
 
@@ -60,17 +64,18 @@ public class AppController : ControllerBase
             select new PersonOrderDTO
             {
                 ProductId = item.Id,
-                Name = item.Name,
+                Name = item.Title,
                 Price = item.Price,
                 BoxPrice = item.BoxPrice,
                 Count = order.Count,
+                BoxCount = item.BoxCount,
             }
         ).ToList();
 
         return Ok(orders);
     }
 
-    [HttpGet("Orders")]
+    [HttpGet(nameof(Orders))]
     public IActionResult Orders()
     {
         List<Order> orders = context.Orders.ToList();
@@ -93,9 +98,10 @@ public class AppController : ControllerBase
                     {
                         ProductId = product.Id,
                         Count = productOrders.Sum(f => f.Count),
-                        Name = product.Name,
+                        Name = product.Title,
                         Price = product.Price,
                         BoxPrice = product.BoxPrice,
+                        BoxCount = product.BoxCount,
                         People = productOrders.ConvertAll(f => new OrderPersonDTO
                         {
                             Count = f.Count,
@@ -119,7 +125,7 @@ public class AppController : ControllerBase
         return Ok(result);
     }
 
-    [HttpPost("ReplaceMenu")]
+    [HttpPost(nameof(ReplaceMenu))]
     public IActionResult ReplaceMenu([FromBody] List<ProductGroupDTO> productGroups)
     {
         context.Orders.RemoveRange(context.Orders.ToList());
@@ -135,14 +141,36 @@ public class AppController : ControllerBase
             Products = f.Products.Select((s, i2) => new Product
             {
                 Id = Guid.NewGuid().ToString("N"),
-                Name = s.Name,
+                Title = s.Title,
                 Price = s.Price,
                 Order = i2 + 1,
                 BoxPrice = s.BoxPrice,
+                OldPromoPrice = s.OldPromoPrice,
+                Ingredients = s.Ingredients,
+                BoxCount = s.BoxCount,
+                Grams = s.Grams,
             }).ToList(),
         }).ToList();
 
         context.ProductGroups.AddRange(groups);
+
+        context.SaveChanges();
+
+        return Ok();
+    }
+
+    [HttpPost(nameof(ReplaceOrder))]
+    public IActionResult ReplaceOrder([FromBody] ProductDTO product)
+    {
+        Product entity = context.Products.First(f => f.Id == product.Id);
+
+        entity.Title = product.Title;
+        entity.Ingredients = product.Ingredients;
+        entity.BoxCount = product.BoxCount;
+        entity.BoxPrice = product.BoxPrice;
+        entity.Price = product.Price;
+        entity.Grams = product.Grams;
+        entity.OldPromoPrice = product.OldPromoPrice;
 
         context.SaveChanges();
 
