@@ -32,12 +32,16 @@ public partial class Add
         Regex promoRegex = PromoRegex();
         Regex quantityRegex = QuantityRegex();
         Regex ingredientsRegex = IngredientsRegex();
+        Regex addinsRegex = AddinsRegex();
         int startIndex = -1;
 
-        void AddProduct(int endIndex)
+        string GetTitle(int endIndex)
         {
-            string title = string.Join(" ", split[startIndex..endIndex]);
+            return string.Join(" ", split[startIndex..endIndex]);
+        }
 
+        void AddProduct(string title)
+        {
             Match promoMatch = promoRegex.Match(title);
 
             if (promoMatch.Success)
@@ -107,16 +111,20 @@ public partial class Add
             {
                 if (startIndex != -1 && currentGroup != null)
                 {
-                    AddProduct(i);
+                    AddProduct(GetTitle(i));
                     startIndex = -1;
                 }
 
                 currentGroup = new ProductGroupDTO
                 {
-                    Name = text,
+                    Name = text == "В ГЮВЕЧЕ"
+                        ? $"🍗{text}🍗"
+                        : text == "НА ТИГАН"
+                        ? $"🍳{text}🍳"
+                        : text,
                     Products = new List<ProductDTO>(),
                 };
-                if (text.Contains("ПРОМО"))
+                if (text.Contains("ПРОМО") || text.Contains("МЕНЮ"))
                 {
                     list.Insert(0, currentGroup);
                 }
@@ -131,7 +139,19 @@ public partial class Add
                 {
                     if (startIndex != -1)
                     {
-                        AddProduct(i);
+                        string title = GetTitle(i);
+
+                        if (title.StartsWith('-'))
+                        {
+                            ProductDTO product = currentGroup.Products[^1];
+
+                            product.Ingredients ??= string.Empty;
+                            product.Ingredients += " " + title;
+                        }
+                        else
+                        {
+                            AddProduct(title);
+                        }
                     }
 
                     startIndex = i;
@@ -141,8 +161,10 @@ public partial class Add
 
         if (currentGroup != null && !string.IsNullOrEmpty(split[^1]))
         {
-            AddProduct(split.Length);
+            AddProduct(GetTitle(split.Length));
         }
+
+        list = list.Where(f => f.Products.Count > 0).ToList();
 
         await Http.PostAsJsonAsync("App/ReplaceMenu", list);
         URIHelper.NavigateTo("/home");
@@ -179,6 +201,9 @@ public partial class Add
 
     [GeneratedRegex("\\/.+\\/")]
     private static partial Regex IngredientsRegex();
+
+    [GeneratedRegex("\\s+-([а-я0-9, ]+)")]
+    private static partial Regex AddinsRegex();
 
     [GeneratedRegex(".?([а-яА-Я ]+) [>]+ [а-яА-Я ]+([0-9,]+)[ ]*лв[а-яА-Я \\(]+([0-9,.]+)[ ]*лв[ \\)]+")]
     private static partial Regex PromoRegex();

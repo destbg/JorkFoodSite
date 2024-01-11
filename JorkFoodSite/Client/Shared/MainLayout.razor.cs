@@ -36,6 +36,7 @@ public partial class MainLayout
             Name = Constants.PersonName;
 
             Constants.Orders = await Http.GetFromJsonAsync<List<PersonOrderDTO>>("App/PersonOrders/" + Constants.PersonName);
+            Constants.ChangeOrders();
         }
 
         await Constants.Connection.StartAsync();
