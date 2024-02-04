@@ -1,3 +1,12 @@
+.loading-menu {
+    width: 100px;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .name-dialog {
     display: flex;
     flex-direction: column;
